@@ -1,8 +1,9 @@
 #!/usr/bin/python3
 def print_board(board):
-    for row in board:
+    for i, row in enumerate(board):
         print(" | ".join(row))
-        print("-" * 5)
+        if i < len(board) - 1:  # Ne pas afficher la ligne après la dernière rangée
+            print("-" * 9)  # Ajusté pour un meilleur alignement
 
 def check_winner(board):
     for row in board:
@@ -26,16 +27,35 @@ def tic_tac_toe():
     player = "X"
     while not check_winner(board):
         print_board(board)
-        row = int(input("Enter row (0, 1, or 2) for player " + player + ": "))
-        col = int(input("Enter column (0, 1, or 2) for player " + player + ": "))
-        if board[row][col] == " ":
-            board[row][col] = player
-            if player == "X":
-                player = "O"
+        try:
+            row_input = input("Enter row (0, 1, or 2) for player " + player + ": ")
+            col_input = input("Enter column (0, 1, or 2) for player " + player + ": ")
+            
+            # Vérifier si l'entrée contient des lettres ou des caractères non numériques
+            if not row_input.isdigit() or not col_input.isdigit():
+                print("Erreur: Veuillez entrer uniquement des chiffres (0, 1, ou 2).")
+                continue
+            
+            row = int(row_input)
+            col = int(col_input)
+            
+            # Vérifier si les coordonnées sont dans les limites (0, 1, ou 2)
+            if row < 0 or row > 2 or col < 0 or col > 2:
+                print("Erreur: Les coordonnées doivent être 0, 1, ou 2 uniquement.")
+                continue
+            
+            if board[row][col] == " ":
+                board[row][col] = player
+                if player == "X":
+                    player = "O"
+                else:
+                    player = "X"
             else:
-                player = "X"
-        else:
-            print("That spot is already taken! Try again.")
+                print("That spot is already taken! Try again.")
+        except ValueError:
+            print("Erreur: Entrée invalide. Veuillez entrer des nombres entre 0 et 2.")
+        except IndexError:
+            print("Erreur: Coordonnées hors limites. Utilisez 0, 1, ou 2.")
 
     print_board(board)
     print("Player " + ("O" if player == "X" else "X") + " wins!")
